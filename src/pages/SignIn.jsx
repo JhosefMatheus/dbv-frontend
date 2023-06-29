@@ -1,8 +1,10 @@
 import {
+    Alert,
     Button,
     Container,
     IconButton,
     Link,
+    Slide,
     TextField,
     Typography
 } from "@mui/material";
@@ -16,6 +18,12 @@ import {
     useState
 } from "react";
 
+import UserModel from "../models/UserModel";
+
+import ServerSideException from "../exceptions/ServerSideException";
+import UnauthorizedException from "../exceptions/UnauthorizedExceptioin";
+import EmptyFieldException from "../exceptions/EmptyFieldException";
+
 export default function SignIn() {
     const [login, setLogin] = useState("");
     const [validLogin, setValidLogin] = useState(true);
@@ -24,8 +32,46 @@ export default function SignIn() {
     const [validPassword, setValidPassword] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
 
-    function onSubmit(e) {
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertSeverity, setAlertSeverity] = useState("");
+    const [alertMessage, setAlertMessage] = useState("");
+
+    async function onSubmit(e) {
         e.preventDefault();
+
+        try {
+            const user = new UserModel({ login, password });
+
+            const { message } = await user.signIn();
+
+            setAlertOpen(true);
+            setAlertSeverity("success");
+            setAlertMessage(message);
+
+        } catch(error) {
+            setAlertOpen(true);
+
+            if (error instanceof UnauthorizedException) {
+                setAlertSeverity(error.severityAlert);
+                setAlertMessage(error.message);
+
+            } else if (error instanceof ServerSideException) {
+                setAlertSeverity(error.severityAlert);
+                setAlertMessage(error.message);
+
+            } else if (error instanceof EmptyFieldException) {
+                setAlertSeverity(error.severityAlert);
+                setAlertMessage(error.message);
+
+                !login && setValidLogin(false);
+                !password && setValidPassword(false);
+
+            } else {
+                setAlertSeverity("error");
+                setAlertMessage(error.message);
+
+            }
+        }
     }
 
     return (
@@ -41,6 +87,23 @@ export default function SignIn() {
                 className={styles.Form}
                 onSubmit={onSubmit}
             >
+                <Slide
+                    direction="down"
+                    in={alertOpen}
+                    mountOnEnter
+                    unmountOnExit
+                >
+                    <Alert
+                        severity={alertSeverity}
+                        onClose={() => setAlertOpen(false)}
+                        sx={{
+                            mb: 2
+                        }}
+                    >
+                        {alertMessage}
+                    </Alert>
+                </Slide>
+
                 <Typography
                     variant="h4"
                     fontSize="2rem"
