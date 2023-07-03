@@ -15,7 +15,8 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import styles from "../style/SignIn.module.css";
 
 import {
-    useState
+    useState,
+    useEffect
 } from "react";
 
 import UserModel from "../models/UserModel";
@@ -23,8 +24,11 @@ import UserModel from "../models/UserModel";
 import ServerSideException from "../exceptions/ServerSideException";
 import UnauthorizedException from "../exceptions/UnauthorizedExceptioin";
 import EmptyFieldException from "../exceptions/EmptyFieldException";
+import { useLocation } from "react-router-dom";
 
 export default function SignIn() {
+    const location = useLocation();
+
     const [login, setLogin] = useState("");
     const [validLogin, setValidLogin] = useState(true);
 
@@ -35,6 +39,18 @@ export default function SignIn() {
     const [alertOpen, setAlertOpen] = useState(false);
     const [alertSeverity, setAlertSeverity] = useState("");
     const [alertMessage, setAlertMessage] = useState("");
+
+    useEffect(() => {
+        if (location.state) {
+            window.history.replaceState({}, document.title);
+
+            setAlertOpen(true);
+            setAlertSeverity(location.state.severityWarning);
+            setAlertMessage(location.state.message);
+
+            delete location.transaction;
+        }
+    }, []);
 
     async function onSubmit(e) {
         e.preventDefault();
