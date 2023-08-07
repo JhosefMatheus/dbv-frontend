@@ -1,8 +1,10 @@
 import {
+    Alert,
     Button,
     Container,
     IconButton,
     Link,
+    Slide,
     TextField,
     Typography
 } from "@mui/material";
@@ -15,6 +17,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 import { UserModel } from "./models";
+import { EmptyFieldException, UnauthorizedException } from "./exceptions";
 
 export default function SignIn() {
     const [login, setLogin] = useState("");
@@ -24,15 +27,38 @@ export default function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
     const [invalidPassword, setInvalidPassword] = useState(false);
 
-    function signIn(e) {
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertSeverity, setAlertSeverity] = useState("success");
+
+    async function signIn(e) {
         try {
             e.preventDefault();
-
-            if (invalidLogin || invalidPassword) {}
             
             const user = new UserModel({ login, password });
+
+            const { message, severity } = await user.signIn();
+
+            setAlertMessage(message);
+            setAlertSeverity(severity);
+            setAlertOpen(true);
         } catch (error) {
-            console.log(error);
+            if (error instanceof EmptyFieldException) {
+                !login && setInvalidLogin(true);
+                !password && setInvalidPassword(true);
+
+                setAlertMessage(error.message);
+                setAlertSeverity(error.severity);
+                setAlertOpen(true);
+            } else if (error instanceof UnauthorizedException) {
+                setAlertMessage(error.message);
+                setAlertSeverity(error.severity);
+                setAlertOpen(true);
+            } else {
+                setAlertMessage(error.message);
+                setAlertSeverity("error");
+                setAlertOpen(true);
+            }
         }
     }
 
@@ -51,6 +77,24 @@ export default function SignIn() {
                 className={styles.Form}
                 onSubmit={signIn}
             >
+                <Slide
+                    direction="down"
+                    in={alertOpen}
+                    mountOnEnter
+                    unmountOnExit
+                    
+                >
+                    <Alert
+                        severity={alertSeverity}
+                        sx={{
+                            mb: 2
+                        }}
+                        onClose={() => setAlertOpen(false)}
+                    >
+                        {alertMessage}
+                    </Alert>
+                </Slide>
+
                 <Typography
                     variant="h4"
                     fontWeight={700}
