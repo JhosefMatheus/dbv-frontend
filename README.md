@@ -1,6 +1,6 @@
 # Getting Started with Create React App
 
-# OLA JHOSEF MATHEU MEIDEIRIOS SILVA ROCHA ARTHUT DO NACISMENTO ROXA NOBREGA
+# PROJETO MUITO BACANA
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
