@@ -4,7 +4,7 @@ import { BasePageFooter } from "./BasePageFooter";
 import { BasePageHeader } from "./BasePageHeader";
 import { BasePageHeaderActions } from "./BasePageHeaderActions";
 import { BasePageHeaderTitle } from "./BasePageHeaderTitle";
-import { BasePageRoot } from "./Root";
+import { BasePageRoot } from "./BasePageRoot";
 
 export const BasePage = {
     Root: BasePageRoot,
