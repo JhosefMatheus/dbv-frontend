@@ -1,0 +1,5 @@
+import { IBaseResponse } from "..";
+
+export interface ISignInResponse extends IBaseResponse {
+  token: string;
+}
