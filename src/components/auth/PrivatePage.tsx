@@ -1,6 +1,7 @@
 import { TokenService } from "@/services";
 import { ReactNode, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { LoaderPage } from "..";
 
 interface IPrivatePageProps {
   children: ReactNode;
@@ -24,7 +25,11 @@ export default function PrivatePage({ children }: IPrivatePageProps): JSX.Elemen
   }, []);
 
   if (tokenValid === null) {
-    return <div>Loading...</div>;
+    return (
+      <LoaderPage>
+        Carregando...
+      </LoaderPage>
+    );
   }
 
   return tokenValid ? (
