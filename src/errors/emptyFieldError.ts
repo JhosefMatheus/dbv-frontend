@@ -1,10 +1,6 @@
-import { AlertVariant } from "@/enums";
-import BaseError from "./baseError";
+import BaseError, { IBaseErrorProps } from "./baseError";
 
-interface IEmptyFieldErrorProps {
-  message: string;
-  alertVariant: AlertVariant;
-}
+interface IEmptyFieldErrorProps extends IBaseErrorProps {}
 
 export default class EmptyFieldError extends BaseError {
   constructor({message, alertVariant}: IEmptyFieldErrorProps) {

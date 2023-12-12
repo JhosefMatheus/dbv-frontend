@@ -1,10 +1,6 @@
-import { AlertVariant } from "@/enums";
-import BaseError from "./baseError";
+import BaseError, { IBaseErrorProps } from "./baseError";
 
-interface ICustomErrorProps {
-  message: string;
-  alertVariant: AlertVariant;
-}
+interface ICustomErrorProps extends IBaseErrorProps {}
 
 export default class CustomError extends BaseError {
   constructor({ message, alertVariant }: ICustomErrorProps) {

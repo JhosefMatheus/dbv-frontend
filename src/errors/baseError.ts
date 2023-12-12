@@ -1,6 +1,6 @@
 import { AlertVariant } from "@/enums";
 
-interface IBaseErrorProps {
+export interface IBaseErrorProps {
   message: string;
   alertVariant: AlertVariant;
 }
