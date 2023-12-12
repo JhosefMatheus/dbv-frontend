@@ -8,8 +8,11 @@ import { ISignInResponse } from "@/responses";
 import { AuthService } from "@/services";
 import { X } from "lucide-react";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function SignInPage(): JSX.Element {
+  const navigate = useNavigate();
+
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
   const [alertVariant, setAlertVariant] = useState<AlertVariant>(AlertVariant.DEFAULT);
   const [alertMessage, setAlertMessage] = useState<string>("");
@@ -26,7 +29,9 @@ export default function SignInPage(): JSX.Element {
 
       const signInResponse: ISignInResponse = await AuthService.signIn(email, password);
 
-      console.log(signInResponse);
+      localStorage.setItem("token", signInResponse.token);
+
+      navigate("/home");
     } catch (error: any) {
       if (error instanceof EmptyFieldError) {
         email.length === 0 && setValidEmail(false);
