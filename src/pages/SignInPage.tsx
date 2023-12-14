@@ -1,3 +1,4 @@
+import { Loader } from "@/components";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,16 +27,24 @@ export default function SignInPage(): JSX.Element {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [passwordFocused, setPasswordFocused] = useState<boolean>(false);
 
+  const [loadingSignIn, setLoadingSignIn] = useState<boolean>(false);
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     try {
+      setLoadingSignIn(true);
+
       e.preventDefault();
 
       const signInResponse: ISignInResponse = await AuthService.signIn(email, password);
 
       localStorage.setItem("token", signInResponse.token);
 
+      setLoadingSignIn(false);
+
       navigate("/home");
     } catch (error: any) {
+      setLoadingSignIn(false);
+
       if (error instanceof EmptyFieldError) {
         email.length === 0 && setValidEmail(false);
         password.length === 0 && setValidPassword(false);
@@ -189,8 +198,17 @@ export default function SignInPage(): JSX.Element {
         <Button
           className="w-full mt-2 bg-blue-500 hover:bg-blue-700"
           type="submit"
+          disabled={loadingSignIn}
         >
-          Entrar
+          {
+            loadingSignIn ? (
+              <Loader
+                className="text-white"
+              />
+            ) : (
+              "Entrar"
+            )
+          }
         </Button>
       </form>
     </div>
