@@ -4,9 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertVariant } from "@/enums";
 import { EmptyFieldError } from "@/errors";
+import { cn } from "@/lib/utils";
 import { ISignInResponse } from "@/responses";
 import { AuthService } from "@/services";
-import { X } from "lucide-react";
+import { Eye, EyeOff, X } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +23,8 @@ export default function SignInPage(): JSX.Element {
 
   const [password, setPassword] = useState<string>("");
   const [validPassword, setValidPassword] = useState<boolean>(true);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [passwordFocused, setPasswordFocused] = useState<boolean>(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     try {
@@ -37,7 +40,7 @@ export default function SignInPage(): JSX.Element {
         email.length === 0 && setValidEmail(false);
         password.length === 0 && setValidPassword(false);
       }
-      
+
       setAlertOpen(true);
       setAlertVariant(error.AlertVariant || AlertVariant.DANGER);
       setAlertMessage(error.message || "Erro inesperado ao fazer login.");
@@ -103,6 +106,14 @@ export default function SignInPage(): JSX.Element {
 
               setEmail(text);
             }}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+              const text: string = e.target.value;
+
+              setValidEmail(text.length > 0);
+            }}
+            className={cn(
+              !validEmail && "ring-red-500 ring-2 ring-offset-2 focus-visible:ring-red-500"
+            )}
           />
           {
             !validEmail && (
@@ -123,17 +134,48 @@ export default function SignInPage(): JSX.Element {
           >
             Senha
           </Label>
-          <Input
-            id="password"
-            type="password"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const text: string = e.target.value;
+          <div
+            className={cn(
+              "flex items-center rounded",
+              passwordFocused && "ring-2 ring-black ring-offset-2 focus-visible:ring-black",
+              !validPassword && "ring-red-500 ring-2 ring-offset-2 focus-visible:ring-red-500"
+            )}
+          >
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const text: string = e.target.value;
 
-              setValidPassword(text.length > 0);
+                setValidPassword(text.length > 0);
 
-              setPassword(text);
-            }}
-          />
+                setPassword(text);
+              }}
+              onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                const text: string = e.target.value;
+
+                setValidPassword(text.length > 0);
+
+                setPasswordFocused(false);
+              }}
+              onFocus={() => setPasswordFocused(true)}
+              className="rounded-r-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+            <Button
+              className="rounded-l-none bg-transparent border hover:bg-slate-200 text-slate-300 hover:text-slate-500"
+              onClick={() => {
+                setShowPassword(!showPassword);
+                setPasswordFocused(true);
+              }}
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
+              type="button"
+            >
+              {
+                showPassword ? <EyeOff /> : <Eye />
+              }
+            </Button>
+          </div>
           {
             !validPassword && (
               <span
