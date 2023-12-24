@@ -1,15 +1,18 @@
-import BasePageAlert from "./BasePageAlert";
+import BasePageBody from "./BasePageBody";
 import BasePageHeader from "./BasePageHeader";
 import BasePageRoot from "./BasePageRoot";
+import BasePageSubHeader from "./BasePageSubHeader";
 
 type BasePageProps = {
   Root: typeof BasePageRoot,
-  Alert: typeof BasePageAlert,
-  Header: typeof BasePageHeader
+  Header: typeof BasePageHeader,
+  SubHeader: typeof BasePageSubHeader,
+  Body: typeof BasePageBody
 }
 
 export const BasePage: BasePageProps = {
   Root: BasePageRoot,
-  Alert: BasePageAlert,
-  Header: BasePageHeader
+  Header: BasePageHeader,
+  SubHeader: BasePageSubHeader,
+  Body: BasePageBody
 }
