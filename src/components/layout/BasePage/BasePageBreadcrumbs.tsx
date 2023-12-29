@@ -1,3 +1,4 @@
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Children } from "react";
 
@@ -10,13 +11,23 @@ export default function BasePageBraedcrumbs({ children, className }: IBasePageBr
   return (
     <div
       className={cn(
-        "w-full h-1/6 overflow-hidden p-2",
+        "w-full h-1/6 overflow-hidden p-2 flex items-center justify-start",
         className
       )}
     >
       {
         Children.map(children, (child: React.ReactNode, index: number) => (
-          <div></div>
+          index !== Children.count(children) - 1 ? (
+            <>
+              {child}
+              <Separator
+                orientation="vertical"
+                className="mx-2 bg-gray-500 h-5"
+              />
+            </>
+          ): (
+            child
+          )
         ))
       }
     </div>

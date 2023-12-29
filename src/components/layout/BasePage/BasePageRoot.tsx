@@ -4,7 +4,7 @@ import SideBar from "../SideBar";
 import BasePageAlert from "./BasePageAlert";
 
 interface IBasePageRootProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function BasePageRoot({ children }: IBasePageRootProps): JSX.Element {

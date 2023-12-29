@@ -6,14 +6,19 @@ import { Label } from "@/components/ui/label";
 import { AlertVariant } from "@/enums";
 import { EmptyFieldError } from "@/errors";
 import { cn } from "@/lib/utils";
+import { UserModel } from "@/models";
 import { ISignInResponse } from "@/responses";
 import { AuthService } from "@/services";
+import { useTokenStore, useUserStore } from "@/stores";
 import { Eye, EyeOff, X } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function SignInPage(): JSX.Element {
   const navigate = useNavigate();
+
+  const setToken = useTokenStore((state) => state.setToken);
+  const setUser = useUserStore((state) => state.setUser);
 
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
   const [alertVariant, setAlertVariant] = useState<AlertVariant>(AlertVariant.DEFAULT);
@@ -37,7 +42,8 @@ export default function SignInPage(): JSX.Element {
 
       const signInResponse: ISignInResponse = await AuthService.signIn(email, password);
 
-      localStorage.setItem("token", signInResponse.token);
+      setToken(signInResponse.token);
+      setUser(new UserModel(signInResponse.user));
 
       setLoadingSignIn(false);
 
