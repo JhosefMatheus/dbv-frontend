@@ -42,13 +42,13 @@ export default function SideBar(): JSX.Element {
         Sistema de gerência de desbravadores
       </span>
       {functionalities.map((functionality: FunctionalityModel) => (
-          <span
-            key={`functionality-${functionality.getId()}`}
-            className="block mt-4 text-gray-500"
-          >
-            {functionality.getName()}
-          </span>
-        ))}
+        <span
+          key={`functionality-${functionality.getId()}`}
+          className="block mt-4 text-gray-500"
+        >
+          {functionality.getName()}
+        </span>
+      ))}
     </div>
   );
 }
