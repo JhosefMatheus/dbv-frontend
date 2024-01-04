@@ -1,6 +1,29 @@
 import { cn } from "@/lib/utils";
+import { FunctionalityModel } from "@/models";
+import { FunctionalityModelProps } from "@/models/functionality-model";
+import { IGetFunctionalitiesResponse } from "@/responses";
+import { FunctionalityService } from "@/services";
+import { useEffect, useState } from "react";
 
 export default function SideBar(): JSX.Element {
+  const [functionalities, setFunctionalities] = useState<FunctionalityModel[]>([]);
+
+  useEffect(() => {
+    async function init(): Promise<void> {
+      try {
+        const getFunctionalitiesResponse: IGetFunctionalitiesResponse = await new FunctionalityService().findMany<IGetFunctionalitiesResponse>();
+
+        setFunctionalities(getFunctionalitiesResponse
+          .functionalities.map((functionalityProps: FunctionalityModelProps) => new FunctionalityModel(functionalityProps)));
+
+      } catch (error: any) {
+        console.log(error);
+      }
+    }
+
+    init();
+  }, []);
+
   return (
     <div
       className={cn(
@@ -18,6 +41,14 @@ export default function SideBar(): JSX.Element {
       >
         Sistema de gerência de desbravadores
       </span>
+      {functionalities.map((functionality: FunctionalityModel) => (
+          <span
+            key={`functionality-${functionality.getId()}`}
+            className="block mt-4 text-gray-500"
+          >
+            {functionality.getName()}
+          </span>
+        ))}
     </div>
   );
 }
